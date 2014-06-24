@@ -1,0 +1,39 @@
+{% extends 'dashboard-base.html' %}
+
+{% block page_title %}Colorado College Library Systems Operational Dashboard - Reports{% endblock %}
+
+{% block sidebar %}
+  {% include ('snippets/sidebar.html') %} 
+{% endblock %}
+
+{% block main %}
+  <h1 class="page-header">Reports</h1>
+{% endblock %}
+
+{% block data_section %}
+{% endblock %}
+
+{% block more_js %}
+<script>
+  ko.applyBindings({
+    libraryServices: [
+      { itemCount: 'N/A',
+        memory: '500MB',
+        serviceClass: 'glyphicon glyphicon-ok',
+        serviceColor: "color: green",
+        service: "Django - <a href='http://tuttlibsys/doc/platform/aristotle-library-apps/'>Aristotle Library Apps</a>",
+        vmName: 'PROD-LI-TuttLibsys'
+     }     
+    ],
+    libraryVMs: [
+     {% for vm in virtual_machines %}
+     { vmName: "{{ vm.get('name') }}",
+       vmStatusImg: "{{ vm['status']['img'] }}",
+       vmStatusMsg: "{{ vm['status']['msg'] }}"
+     } {% if not loop.last %},{% endif %}
+     {% endfor %}
+    ]
+  });
+
+</script>
+{% endblock %}

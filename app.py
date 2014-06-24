@@ -10,28 +10,71 @@
 # Licence:     MIT
 #-------------------------------------------------------------------------------
 __version__= (0,0,1)
-from flask import abort, Flask, render_template
+import json
+import os
+import urllib2
+from flask import abort, Flask, render_template, url_for
 
 dashboard = Flask(__name__)
 
+virtual_machines = json.load(open('../virtual-machines.json'))
+
 @dashboard.route('/analytics')
 def analytics():
-    return "In analytics"
+    return render_template(
+        'analytics.html',
+        page='analytics')
 
 
 @dashboard.route('/export')
 def export():
-    return "In export"
+    return render_template(
+        'export.html',
+        page='analytics')
 
 @dashboard.route('/reports')
 def reports():
-    return "In reports"
+    return render_template(
+        'reports.html',
+        page='reports')
 
+@dashboard.route('/status/<name>')
+def vm_status(name):
+    status = None
+    for row in virtual_machines:
+        if name == row.get('name'):
+            try:
+                vm_response = urllib2.urlopen("http://{}".format(row.get('ip4')))
+                print("Success!!")
+                if vm_response.code < 300:
+                    status = {
+                        'img': url_for('static', filename='img/success.png'),
+                        'msg': 'Operational'}
+                elif vm_response.code < 400:
+                    status = {
+                        'img': url_for('static', filename='img/caution.png'),
+                        'msg': 'Caution for {}'.format(row.get('ip4'))}
+                else:
+                    status = {
+                        'img': url_for('static', filename='img/failure.png'),
+                        'msg': 'Failure for {}'.format(row.get('ip4'))}
+            except urllib2.URLError:
+                status = {
+                    'img': url_for('static', filename='img/failure.png'),
+                    'msg': 'Failure for {}'.format(row.get('ip4'))}
+    if status is None:
+        raise abort(404)
+    return json.dumps(status)
+
+
+
+@dashboard.route('/dashboard')
 @dashboard.route('/')
 def index():
     return render_template(
         'index.html',
-        page='dashboard')
+        page='dashboard',
+        virtual_machines=virtual_machines)
 
 def main():
     dashboard.run(

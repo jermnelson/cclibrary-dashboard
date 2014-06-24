@@ -1,6 +1,6 @@
 {% extends 'dashboard-base.html' %}
 
-{% block page_title %}CCLibrary - Operational Dashboard{% endblock %}
+{% block page_title %}Operational Dashboard for Colorado College Library Systems{% endblock %}
 
 {% block sidebar %}
   {% include ('snippets/sidebar.html') %} 
@@ -19,6 +19,7 @@
      </div>
    </div>
 {% endblock %}
+
 
 {% block data_section %}
  <h2 class="sub-header">Running Services</h2>
@@ -62,9 +63,12 @@
      }     
     ],
     libraryVMs: [
-      { vmName: "PROD-LI-TuttLibSys",
-        vmStatusImg: "{{ url_for('static', filename='img/success.png') }}",
-        vmStatusMsg: "Operational uptime: 10:00" }
+     {% for vm in virtual_machines %}
+     { vmName: "{{ vm.get('name') }}",
+       vmStatusImg: "",
+       vmStatusMsg: ""
+     } {% if not loop.last %},{% endif %}
+     {% endfor %}
     ]
   });
 
