@@ -1,0 +1,14 @@
+<ul class="nav nav-sidebar">
+  <li {% if page.endswith('dashboard') %}class="active"{% endif %}>
+    <a href="/dashboard">Overview</a>
+  </li>
+  <li {% if page.endswith('reports') %}class="active"{% endif %}>
+    <a href="{{ url_for('reports') }}">Reports</a>
+  </li>
+  <li {% if page.endswith('analytics') %}class="active"{% endif %}>
+    <a href="{{ url_for('analytics') }}">Analytics</a>
+  </li>
+  <li {% if page.endswith('export') %}class="active"{% endif %}>
+    <a href="{{ url_for('export') }}">Export</a>
+  </li> 
+</ul>

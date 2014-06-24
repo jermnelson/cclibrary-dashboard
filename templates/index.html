@@ -1,0 +1,72 @@
+{% extends 'dashboard-base.html' %}
+
+{% block page_title %}CCLibrary - Operational Dashboard{% endblock %}
+
+{% block sidebar %}
+  {% include ('snippets/sidebar.html') %} 
+{% endblock %}
+
+{% block main %}
+  <h1 class="page-header">Operational Dashboard</h1>
+  <div class="row placeholders" data-bind="foreach: libraryVMs">
+     <div class="col-xs-6 col-sm-3 placeholder">
+       <img data-bind="attr: {'src': vmStatusImg}" 
+            class="img-responsive" 
+            alt="Library VM Status">
+       <h4 data-bind="text: vmName"></h4>
+       <span data-bind="text: vmStatusMsg"
+             class="text-muted"></span>
+     </div>
+   </div>
+{% endblock %}
+
+{% block data_section %}
+ <h2 class="sub-header">Running Services</h2>
+   <div class="table-responsive">
+     <table class="table table-striped">
+       <thead>
+          <tr>
+            <th>#</th>
+            <th>Virtual Machine</th>
+            <th>Service</th>
+            <th>Memory</th>
+            <th>Items</th>
+           </tr>
+        </thead>
+        <tbody data-bind="foreach: libraryServices">
+          <tr>
+           <td>
+             <span data-bind="attr: { 'class': serviceClass,
+                                      'style': serviceColor }"></span>
+           </td>
+           <td data-bind="text: vmName"></td>
+           <td data-bind="html: service"></td>
+           <td data-bind="text: memory"></td>
+           <td data-bind="text: itemCount"> </td>
+          </tr>
+        </tbody>
+     </table>
+   </div>
+{% endblock %}
+
+{% block more_js %}
+<script>
+  ko.applyBindings({
+    libraryServices: [
+      { itemCount: 'N/A',
+        memory: '500MB',
+        serviceClass: 'glyphicon glyphicon-ok',
+        serviceColor: "color: green",
+        service: "Django - <a href='http://tuttlibsys/doc/platform/aristotle-library-apps/'>Aristotle Library Apps</a>",
+        vmName: 'PROD-LI-TuttLibsys'
+     }     
+    ],
+    libraryVMs: [
+      { vmName: "PROD-LI-TuttLibSys",
+        vmStatusImg: "{{ url_for('static', filename='img/success.png') }}",
+        vmStatusMsg: "Operational uptime: 10:00" }
+    ]
+  });
+
+</script>
+{% endblock %}
