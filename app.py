@@ -17,7 +17,32 @@ from flask import abort, Flask, render_template, url_for
 
 dashboard = Flask(__name__)
 
+services = json.load(open('../services.json'))
 virtual_machines = json.load(open('../virtual-machines.json'))
+
+def add_service():
+    service = dict()
+    service['name'] = input("Service Name:")
+    print("Library VMs")
+    for i,vm in enumerate(lib_vms):
+        print("{} - {}".format(i, vm.get('name')))
+    vm_num = input("Select number >>")
+    if int(vm_num) < 0 or int(vm_num) > len(lib_vms):
+        print("Invalid choice...")
+        return
+    else:
+        service['ip4'] = lib_vms[int(vm_num)].get('ip4')
+        service['host'] = lib_vms[int(vm_num)].get('name')
+    service['port'] = input("Port Number")
+    service['max_memory'] = input("Max memory:")
+    service['item-count'] = input("Total number of records, items, or other:")
+    print("Keep: {}".format(service))
+    keep = input("Y|N >>")
+    if keep.lower().startswith('y'):
+        services.append(service)
+    continue_ = input("Continue? Y|N >>")
+    if continue_.lower().startswith('y'):
+        add_service()
 
 @dashboard.route('/analytics')
 def analytics():
@@ -74,6 +99,7 @@ def index():
     return render_template(
         'index.html',
         page='dashboard',
+        services=services,
         virtual_machines=virtual_machines)
 
 def main():

@@ -54,19 +54,22 @@
 <script>
   ko.applyBindings({
     libraryServices: [
-      { itemCount: 'N/A',
-        memory: '500MB',
+     {% for service in services %}
+      { itemCount: "{{ service['item-count'] }}",
+        memory: "{{ service['max_memory'] }}",
         serviceClass: 'glyphicon glyphicon-ok',
         serviceColor: "color: green",
-        service: "Django - <a href='http://tuttlibsys/doc/platform/aristotle-library-apps/'>Aristotle Library Apps</a>",
-        vmName: 'PROD-LI-TuttLibsys'
-     }     
+        service: "{{ service['name'] }}",
+        vmName: "{{ service['host'] }}"
+      }     
+     {% if not loop.last %},{% endif %}
+     {% endfor %}
     ],
     libraryVMs: [
      {% for vm in virtual_machines %}
      { vmName: "{{ vm.get('name') }}",
-       vmStatusImg: "",
-       vmStatusMsg: ""
+       vmStatusImg: "{{ url_for('static', filename='img/success.png') }}",
+       vmStatusMsg: "IP4 address {{ vm.get('ip4') }}"
      } {% if not loop.last %},{% endif %}
      {% endfor %}
     ]
