@@ -14,7 +14,7 @@
             class="img-responsive" 
             alt="Library VM Status">
        <h4 data-bind="text: vmName"></h4>
-       <span data-bind="text: vmStatusMsg"
+       <span data-bind="html: vmStatusMsg"
              class="text-muted"></span>
      </div>
    </div>
@@ -67,9 +67,9 @@
     ],
     libraryVMs: [
      {% for vm in virtual_machines %}
-     { vmName: "{{ vm.get('name') }}",
+     { vmName: "{{ vm.name }}",
        vmStatusImg: "{{ url_for('static', filename='img/success.png') }}",
-       vmStatusMsg: "IP4 address {{ vm.get('ip4') }}"
+       vmStatusMsg: "IP4 address {{ vm.vars.get('ansible_ssh_host') }}<br>{{ vm.vars.get('cc_name') }}"
      } {% if not loop.last %},{% endif %}
      {% endfor %}
     ]

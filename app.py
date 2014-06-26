@@ -13,7 +13,8 @@ __version__= (0,0,1)
 import json
 import os
 import urllib2
-from flask import abort, Flask, render_template, url_for
+from flask import abort, Flask, make_response,render_template, url_for
+import ansible.inventory
 import ansible.runner
 
 runner = ansible.runner.Runner(
@@ -23,13 +24,11 @@ runner = ansible.runner.Runner(
   forks=10
 )
 
-datastructure = runner.run()
-print(datastructure)
 
 dashboard = Flask(__name__)
-
-services = json.load(open('../services.json'))
-virtual_machines = json.load(open('../virtual-machines.json'))
+inventory = ansible.inventory.Inventory()
+#services = json.load(open('../services.json'))
+#virtual_machines = json.load(open('../virtual-machines.json'))
 
 def add_service():
     service = dict()
@@ -107,10 +106,10 @@ def vm_status(name):
 @dashboard.route('/dashboard/')
 @dashboard.route('/')
 def index():
+    virtual_machines=inventory.get_hosts()
     return render_template(
         'index.html',
         page='dashboard',
-        services=services,
         virtual_machines=virtual_machines)
 
 def main():
