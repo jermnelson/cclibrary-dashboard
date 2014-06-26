@@ -14,6 +14,17 @@ import json
 import os
 import urllib2
 from flask import abort, Flask, render_template, url_for
+import ansible.runner
+
+runner = ansible.runner.Runner(
+  module_name='ping',
+  module_args='',
+  pattern='DMZ',
+  forks=10
+)
+
+datastructure = runner.run()
+print(datastructure)
 
 dashboard = Flask(__name__)
 
@@ -93,7 +104,7 @@ def vm_status(name):
 
 
 
-@dashboard.route('/dashboard')
+@dashboard.route('/dashboard/')
 @dashboard.route('/')
 def index():
     return render_template(
@@ -105,7 +116,7 @@ def index():
 def main():
     dashboard.run(
         host='0.0.0.0',
-        port=10001,
+        port=10002,
         debug=True)
 
 if __name__ == '__main__':
