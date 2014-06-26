@@ -13,7 +13,7 @@ __version__= (0,0,1)
 import json
 import os
 import urllib2
-from flask import abort, Flask, render_template, url_for
+from flask import abort, Flask, make_response, render_template, url_for
 
 dashboard = Flask(__name__)
 
@@ -65,6 +65,7 @@ def reports():
 
 @dashboard.route('/status/<name>')
 def vm_status(name):
+
     status = None
     for row in virtual_machines:
         if name == row.get('name'):
