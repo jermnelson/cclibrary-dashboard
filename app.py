@@ -12,6 +12,7 @@
 __version__= (0,0,1)
 import json
 import os
+
 import urllib2
 from flask import abort, Flask, make_response,render_template, url_for
 import ansible.inventory
@@ -24,6 +25,7 @@ runner = ansible.runner.Runner(
   forks=10
 )
 
+db_2013_2014 = sqlite3.connect("../../stats/db/2013-2014.sqlite")
 
 dashboard = Flask(__name__)
 inventory = ansible.inventory.Inventory()
@@ -73,6 +75,8 @@ def reports():
         'reports.html',
         page='reports')
 
+
+
 @dashboard.route('/status/<name>')
 def vm_status(name):
     status = None
@@ -100,6 +104,11 @@ def vm_status(name):
     if status is None:
         raise abort(404)
     return json.dumps(status)
+
+@dashboard.route('/<year>/<month>/<day>')
+def daily_snapshot(year, month, day):
+    cursor = db_2013_2014.cursor()
+    start_day = datetime.datetime(year=year, month=month, day=day)
 
 
 
